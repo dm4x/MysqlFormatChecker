@@ -1,18 +1,17 @@
 import scala.io.Source
+import scala.sys.env
 
-object Main extends App {
+object MysqlFormatChecker extends App {
 
-  val checkedFile = "/home/kiselev/dbWorkspace/lbcore/mysql/create_structure.sql"
-  val dictFile = "/home/kiselev/SQL_reserved_words"
+  val checkedFile = s"${env.get("PWD").get}/test.sql"
+  val dictFile = s"${env.get("PWD").get}/SQL_reserved_words"
 
   val bufferedSource = Source.fromFile(dictFile)
   val dictionary = bufferedSource.getLines.toList
   bufferedSource.close()
   val UpperRegex = "[^A-Z]".r
 
-  def sqlTokenizer(line: String): List[String] = {
-    line.replaceAll("[\\)\\(]", " ").split(" ").toList
-  }
+  def sqlTokenizer(line: String): List[String] = line.replaceAll("[\\)\\(]", " ").split(" ").toList
 
   def isReservedWord(word: String, sqlDictionary: List[String]): Boolean = dictionary.contains(word.toUpperCase())
 
