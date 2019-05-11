@@ -1,5 +1,5 @@
-DROP PROCEDURE IF EXISTS `update_037`;;
-CREATE PROCEDURE `update_037`(IN build_date date)
+    DROP PROCEDURE IF EXISTS `update_037`;;
+CREATE PROCEDURE `update_037`(IN build_date DATE)
 BEGIN
     CALL show_msg('>>CALL update_037();');
 

@@ -1,31 +1,33 @@
 import scala.io.Source
-import scala.sys.env
+import Properties._
 
 object MysqlFormatChecker extends App {
 
-  val checkedFile = s"${env.get("PWD").get}/test.sql"
-  val dictFile = s"${env.get("PWD").get}/SQL_reserved_words"
+  def sqlTokenizer(line: String): List[String] = line
+    .replaceAll("[\\)\\(]", " ")
+    .split(" ")
+    .toList
 
-  val bufferedSource = Source.fromFile(dictFile)
-  val dictionary = bufferedSource.getLines.toList
-  bufferedSource.close()
-  val UpperRegex = "[^A-Z]".r
+  def isReservedWord(word: String, sqlDictionary: List[String]): Boolean = {
+    dictionary.contains(word.toUpperCase())
+  }
 
-  def sqlTokenizer(line: String): List[String] = line.replaceAll("[\\)\\(]", " ").split(" ").toList
+  def isTabbedLine(line: String): Boolean = {true}
 
-  def isReservedWord(word: String, sqlDictionary: List[String]): Boolean = dictionary.contains(word.toUpperCase())
-
-  var counter = 0
+//  def notEmptyPrinter[A,B,C](f: (A,B,C) => A, string: String): Unit = {
+//    if (string.nonEmpty) println(f(string, _, _))
+//  }
 
   for (line <- Source.fromFile(checkedFile).getLines()) {
-    counter = counter + 1
-    val wordsFromLine = sqlTokenizer(line).filter(isReservedWord(_, dictionary))
+    val currentLine = LineCounter.currentLineNumber()
+    sqlTokenizer(line)
+      .filter(isReservedWord(_, dictionary))
+      .foreach( word => println(CaseChecker.check(word, currentLine, upperRegex))
+      )
 
-    wordsFromLine.filterNot(_.isEmpty).foreach {word =>
-        UpperRegex.findFirstIn(word) match {
-          case Some(x) => println(s"reserved word `$word` in line $counter is not in UPPERCASE")
-          case None => ""
-        }
-      }
+//    println(line.startsWith("    "))
+
+    println(TabsChecker.check(line.take(4), currentLine, tabSpacesRegex))
+
   }
 }
