@@ -14,20 +14,17 @@ object MysqlFormatChecker extends App {
 
   def isTabbedLine(line: String): Boolean = {true}
 
-//  def notEmptyPrinter[A,B,C](f: (A,B,C) => A, string: String): Unit = {
-//    if (string.nonEmpty) println(f(string, _, _))
-//  }
 
-  for (line <- Source.fromFile(checkedFile).getLines()) {
+  for (line <- Source.fromFile(fileToCheck).getLines()) {
     val currentLine = LineCounter.currentLineNumber()
     sqlTokenizer(line)
+      .filter(_.nonEmpty)
       .filter(isReservedWord(_, dictionary))
-      .foreach( word => println(CaseChecker.check(word, currentLine, upperRegex))
-      )
+      .foreach(word => print(CaseChecker.check(word, currentLine, upperRegex).getOrElse("")))
 
-//    println(line.startsWith("    "))
-
-    println(TabsChecker.check(line.take(4), currentLine, tabSpacesRegex))
+    print(
+      TabsChecker.check(line.take(4), currentLine, tabSpacesRegex).getOrElse("")
+    )
 
   }
 }

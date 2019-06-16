@@ -3,7 +3,7 @@ import scala.sys.env
 import scala.util.matching.Regex
 
 object Properties {
-  val checkedFile = s"${env("PWD")}/test.sql"
+  val fileToCheck = s"${env("PWD")}/test.sql"
   val bufferedSource: BufferedSource = Source.fromFile(s"${env("PWD")}/SQL_reserved_words")
   val dictionary: List[String] = bufferedSource.getLines.toList
   bufferedSource.close()
